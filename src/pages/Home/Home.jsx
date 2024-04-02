@@ -11,7 +11,7 @@ const Home = () => {
         <div className='home'>
             {error && <p className='error'>{error}</p>}
             {isLoading && <p className='loading'>Loading...</p>}
-            {data && <RecipeList />}
+            {data && <RecipeList recipes={data} />}
         </div>
     )
 }
