@@ -17,7 +17,7 @@ const SearchBar = () => {
                 <input
                     id='search'
                     type="text"
-                    onChange={e => setTerm(e.target.value)}
+                    onChange={(e) => setTerm(e.target.value)}
                     required
                 />
             </form>
