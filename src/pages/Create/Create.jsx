@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import './Create.css'
-import { useFetch } from '../../hooks/useFetch.jsx'
 import { useNavigate } from 'react-router-dom'
+import './Create.css'
+import { addDoc, collection } from 'firebase/firestore'
+import { db } from '../../firebase/config'
 
 
 const Create = () => {
+
 
     const [title, setTitle] = useState('')
     const [method, setMethod] = useState('')
@@ -12,14 +14,24 @@ const Create = () => {
     const [newIngredient, setNewIngredient] = useState('')
     const [ingredients, setIngredients] = useState([])
 
-    const { postData, data, error } = useFetch('http://localhost:3000/recipes', 'POST')
+    // const { postData, data, error } = useFetch('http://localhost:3000/recipes', 'POST')
 
     const navigate = useNavigate()
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
 
-        postData({ title, ingredients, method, cookingTime: cookingTime + 'minutes' })
+        const doc = { title, ingredients, method, cookingTime: cookingTime + 'minutes' }
+        try {
+
+            const ref = collection(db, 'recipes')
+            await addDoc(ref, doc)
+
+            navigate('/')
+
+        } catch (err) {
+            console.log(err)
+        }
     }
 
     const addIngredients = (e) => {
@@ -32,12 +44,6 @@ const Create = () => {
         }
         setNewIngredient('')
     }
-
-    useEffect(() => {
-        if (data) {
-            navigate('/')
-        }
-    }, [data])
 
     return (
         <div className='create'>
