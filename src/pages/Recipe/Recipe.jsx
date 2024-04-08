@@ -1,13 +1,31 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { useFetch } from '../../hooks/useFetch.jsx'
 
 import './Recipe.css'
+import { doc, getDoc } from 'firebase/firestore'
+import { db } from '../../firebase/config'
 
 const Recipe = () => {
     const { id } = useParams()
-    const url = 'http://localhost:3000/recipes/' + id
-    const { data: recipe, isLoading, error } = useFetch(url)
+    const [recipe, setRecipe] = useState(null)
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState(false)
+
+    useEffect(() => {
+        setIsLoading(true)
+
+        const ref = doc(db, 'recipes', id)
+        getDoc(ref)
+            .then(doc => {
+                if (doc.empty) {
+                    setError('No Recipe found')
+                    setIsLoading(false)
+                } else {
+                    setIsLoading(false)
+                    setRecipe(doc.data())
+                }
+            })
+    }, [])
     return (
         <div className='recipe'>
             {error && <p className='error'>{error}</p>}
