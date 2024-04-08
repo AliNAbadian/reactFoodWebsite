@@ -9,10 +9,12 @@ import { db } from '../firebase/config'
 
 const RecipeList = ({ recipes }) => {
 
+
     const handleClick = async (id) => {
         try {
             const ref = doc(db, 'recipes', id)
             await deleteDoc(ref)
+
         } catch (err) {
             console.log(err)
         }
